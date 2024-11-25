@@ -1,0 +1,4 @@
+enum NumpadMode {
+  pin,
+  amount,
+}
