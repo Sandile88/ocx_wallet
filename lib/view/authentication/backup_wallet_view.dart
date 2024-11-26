@@ -45,7 +45,9 @@ class BackupWalletView extends StatelessWidget {
                           ),
                       ),
                     ],
-                    child: const EnterPinView(),
+                    child: const EnterPinView(
+                      pinType: Pin.secureWallet,
+                    ),
                   ),
                 ),
               );

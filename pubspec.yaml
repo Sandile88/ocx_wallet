@@ -46,6 +46,9 @@ dependencies:
   flutter_onboarding_slider: ^1.0.11
   flutter_dotenv: ^5.2.1
   http: ^1.2.2
+  slidable_button: ^3.0.0+1
+  mobile_scanner: ^6.0.2
+  # qr_code_scanner_plus: ^2.0.6 
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +102,15 @@ flutter:
     - family: withdraw
       fonts:
         - asset: fonts/withdraw.ttf
+    - family: nfc_outlined
+      fonts:
+        - asset: fonts/nfc_outlined.ttf
+    - family: qr_scanner_filled
+      fonts:
+        - asset: fonts/qr_scanner_filled.ttf
+    - family: qr_scanner_outlined
+      fonts:
+        - asset: fonts/qr_scanner_outlined.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

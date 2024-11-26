@@ -11,6 +11,16 @@ class OnboardingDoneEvent extends WalletEvent {}
 
 class CreateWalletEvent extends WalletEvent {}
 
+class OnlineTransferEvent extends WalletEvent {
+  final String recipient;
+  final String amount;
+
+  OnlineTransferEvent({required this.amount, required this.recipient});
+
+  @override
+  List<Object?> get props => [recipient, amount];
+}
+
 class SecureWalletEvent extends WalletEvent {
   final String pin;
 

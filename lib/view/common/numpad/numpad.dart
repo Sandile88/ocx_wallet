@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ocx_wallet/constants/colors.dart';
 import 'package:ocx_wallet/constants/dimensions.dart';
 import 'package:ocx_wallet/constants/type.dart';
 import 'package:ocx_wallet/service/numpad/bloc.dart';
@@ -9,6 +10,7 @@ import 'package:ocx_wallet/view/common/numpad/amount_display.dart';
 import 'package:ocx_wallet/view/common/numpad/delete_button.dart';
 import 'package:ocx_wallet/view/common/numpad/numpad_button.dart';
 import 'package:ocx_wallet/view/common/numpad/pin_display.dart';
+import 'package:slidable_button/slidable_button.dart';
 
 // Enum to define different numpad modes
 // enum NumpadMode {
@@ -105,14 +107,16 @@ class Numpad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 128,
-        bottom: 64.0,
-      ),
+    Size size = MediaQuery.of(context).size;
+    return SizedBox(
+      height: size.height,
+      width: size.width,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          const SizedBox(
+            height: 128,
+          ),
           BlocBuilder<NumpadBloc, NumpadState>(
             builder: (context, state) {
               // Display section
@@ -150,9 +154,6 @@ class Numpad extends StatelessWidget {
             },
           ),
 
-          const SizedBox(
-            height: 150,
-          ),
           // Numpad grid
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -216,6 +217,71 @@ class Numpad extends StatelessWidget {
           //       child: const Text('Continue'),
           //     ),
           //   ),
+
+          BlocBuilder<NumpadBloc, NumpadState>(builder: (context, state) {
+            if (state.mode == NumpadMode.amount) {
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: HorizontalSlidableButton(
+                  width: MediaQuery.of(context).size.width,
+                  buttonWidth: 70.0,
+                  height: 70.0,
+                  color: primary.withOpacity(0.6),
+                  buttonColor: primary,
+                  dismissible: false,
+                  label: const Center(child: Text('')),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Pay",
+                        style: TextStyle(
+                          color: Colors.white60,
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      // SizedBox(
+                      //   width: 2.0,
+                      // ),
+                      Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        size: 32,
+                        color: Colors.white60,
+                      ),
+                      // SizedBox(
+                      //   width: 2.0,
+                      // ),
+                      Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        size: 32,
+                        color: Colors.white38,
+                      ),
+                      // SizedBox(
+                      //   width: 2.0,
+                      // ),
+                      Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        size: 32,
+                        color: Colors.white24,
+                      ),
+                    ],
+                  ),
+                  onChanged: (position) {
+                    if (position == SlidableButtonPosition.end) {
+                      onSubmit(state.currentInput);
+                    }
+                  },
+                ),
+              );
+            }
+
+            return const SizedBox();
+          }),
+
+          // const SizedBox(
+          //   height: 64.0,
+          // ),
         ],
       ),
     );

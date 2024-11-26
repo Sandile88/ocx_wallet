@@ -111,9 +111,15 @@ class WalletRepositoryimpl implements WalletRepository {
   }
 
   @override
-  Future<void> pay({required String amount, required String recipient}) async {
+  Future<bool> walletUnlocked() async {
+    return _wallet != null;
+  }
+
+  @override
+  Future<void> transfer(
+      {required String amount, required String recipient}) async {
     var apiUrl = dotenv.get("LISK_RPC");
-    var chainId = dotenv.getInt("LISK_CHAIN_ID");
+    // var chainId = dotenv.getInt("LISK_CHAIN_ID");
 
     http.Client httpClient = http.Client();
 
@@ -123,7 +129,7 @@ class WalletRepositoryimpl implements WalletRepository {
 
     await ethClient.sendTransaction(
       _wallet!.privateKey,
-      chainId: chainId,
+      // chainId: chainId,
       Transaction(
         to: EthereumAddress.fromHex(amount),
         gasPrice: EtherAmount.inWei(BigInt.one),

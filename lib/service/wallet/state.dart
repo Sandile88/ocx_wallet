@@ -9,6 +9,19 @@ class InvalidUnlockPinState extends WalletState {}
 
 class WalletUnlockedState extends WalletState {}
 
+class WalletFailureState extends WalletState {
+  final String message;
+
+  WalletFailureState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class TransferSuccessState extends WalletState {}
+
+class SplashState extends WalletState {}
+
 class WalletLoadingState extends WalletState {}
 
 class NoWalletState extends WalletState {}

@@ -3,4 +3,6 @@ enum NumpadMode {
   amount,
 }
 
-enum Payview { enterAmount, enterAddress, loading }
+enum Payview { enterAmount, enterAddress, loading, scanQrCode, tap2Pay }
+
+enum Pin { secureWallet, unlockWallet }

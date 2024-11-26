@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ocx_wallet/constants/type.dart';
 import 'package:ocx_wallet/service/numpad/bloc.dart';
 import 'package:ocx_wallet/service/numpad/event.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
@@ -8,7 +9,8 @@ import 'package:ocx_wallet/service/wallet/state.dart';
 import 'package:ocx_wallet/view/common/numpad/numpad.dart';
 
 class EnterPinView extends StatelessWidget {
-  const EnterPinView({super.key});
+  const EnterPinView({super.key, required this.pinType});
+  final Pin pinType;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +32,13 @@ class EnterPinView extends StatelessWidget {
                 child: Numpad(
                   onSubmit: (value) {
                     BlocProvider.of<WalletBloc>(context).add(
-                      SecureWalletEvent(
-                        BlocProvider.of<NumpadBloc>(context)
-                            .state
-                            .currencySymbol,
-                      ),
+                      (pinType == Pin.secureWallet)
+                          ? SecureWalletEvent(
+                              BlocProvider.of<NumpadBloc>(context)
+                                  .state
+                                  .currencySymbol,
+                            )
+                          : UnlockWalletEvent(value),
                     );
                   },
                 ),

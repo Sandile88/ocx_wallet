@@ -17,6 +17,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<CreateWalletEvent>(_createWallet);
     on<SecureWalletEvent>(_secureWallet);
     on<OnboardingDoneEvent>(_onboardingDone);
+    on<OnlineTransferEvent>(_onlineTransfer);
   }
 
   _init(Emitter emit) async {
@@ -37,22 +38,24 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       emit(WalletNotSecuredState());
       return;
     } else {
+      if (!(await _walletRepository.walletUnlocked())) {
+        emit(UnlockWalletState());
+        return;
+      }
       emit(WalletUnlockedState());
       return;
     }
-
-    // emit(UnlockWalletState());
   }
 
   ///app started event handler
   _appStarted(AppStartedEvent event, Emitter emit) async {
-    emit(WalletLoadingState());
+    emit(SplashState());
 
     await _init(emit);
   }
 
   _onboardingDone(OnboardingDoneEvent event, Emitter emit) async {
-    emit(WalletLoadingState());
+    emit(SplashState());
 
     final prefs = await SharedPreferences.getInstance();
 
@@ -64,7 +67,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   /// unlock wallet event handlet
   _unlockWallet(UnlockWalletEvent event, Emitter emit) async {
     /// emit loading state
-    emit(WalletLoadingState());
+    emit(SplashState());
 
     /// check validate pin
     if (await _walletRepository.validPin(event.pin)) {
@@ -83,7 +86,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   /// create wallet event handler
   _createWallet(CreateWalletEvent event, Emitter emit) async {
     try {
-      emit(WalletLoadingState());
+      emit(SplashState());
 
       await _walletRepository.createWallet();
 
@@ -94,7 +97,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   _secureWallet(SecureWalletEvent event, Emitter emit) async {
-    emit(WalletLoadingState());
+    emit(SplashState());
 
     await _walletRepository.secureWallet(pin: event.pin);
 
@@ -103,5 +106,19 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     prefs.setBool('is_wallet_secured', true);
 
     emit(WalletUnlockedState());
+  }
+
+  _onlineTransfer(OnlineTransferEvent event, Emitter emit) async {
+    emit(WalletLoadingState());
+
+    try {
+      await _walletRepository.transfer(
+        recipient: event.recipient,
+        amount: event.amount,
+      );
+      emit(TransferSuccessState());
+    } catch (e) {
+      emit(WalletFailureState(e.toString()));
+    }
   }
 }

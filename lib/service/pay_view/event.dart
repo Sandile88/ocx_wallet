@@ -15,6 +15,30 @@ class OnAmountChanged extends PayviewEvent {
   List<Object?> get props => [amount];
 }
 
+class OnDoneEvent extends PayviewEvent {}
+
+class OnErrorEvent extends PayviewEvent {
+  final String message;
+
+  OnErrorEvent(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class OnSuccessEvent extends PayviewEvent {}
+
+class OnQrCodeScannedWEvent extends PayviewEvent {
+  final String address;
+
+  OnQrCodeScannedWEvent(this.address);
+
+  @override
+  List<Object?> get props => [address];
+}
+
+class OnOnlineTransferEvent extends PayviewEvent {}
+
 class OnSwitchViewEvent extends PayviewEvent {
   final Payview view;
 

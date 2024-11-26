@@ -4,6 +4,8 @@ abstract class WalletRepository {
   Future<void> secureWallet({required String pin});
   Future<bool> hasPhrase();
   Future<bool> validPin(String pin);
+  Future<bool> walletUnlocked();
+  // Future<void> transfer({required String recipient, required String amount});
 
-  Future<void> pay({required String amount, required String recipient});
+  Future<void> transfer({required String amount, required String recipient});
 }
