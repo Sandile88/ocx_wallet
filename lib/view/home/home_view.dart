@@ -13,16 +13,16 @@ class HomeView extends StatelessWidget {
       body: SizedBox(
         height: size.height,
         width: size.width,
-        child: Padding(
-          padding: const EdgeInsets.only(
+        child: const Padding(
+          padding: EdgeInsets.only(
             top: 64.0,
             right: 20.0,
             left: 20.0,
           ),
-          child: const Column(
+          child: Column(
             children: [
               Balance(),
-              const SizedBox(
+              SizedBox(
                 height: 20.0,
               ),
               TransactionOptions(),

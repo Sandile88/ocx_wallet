@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ocx_wallet/constants/type.dart';
 
 class PayviewEvent extends Equatable {
   @override
@@ -12,6 +13,15 @@ class OnAmountChanged extends PayviewEvent {
 
   @override
   List<Object?> get props => [amount];
+}
+
+class OnSwitchViewEvent extends PayviewEvent {
+  final Payview view;
+
+  OnSwitchViewEvent(this.view);
+
+  @override
+  List<Object?> get props => [view];
 }
 
 class OnAddressChanged extends PayviewEvent {
