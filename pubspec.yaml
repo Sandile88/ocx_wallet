@@ -48,6 +48,7 @@ dependencies:
   http: ^1.2.2
   slidable_button: ^3.0.0+1
   mobile_scanner: ^6.0.2
+  pretty_qr_code: ^3.3.0
   # qr_code_scanner_plus: ^2.0.6 
 
 dev_dependencies:

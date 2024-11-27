@@ -7,5 +7,9 @@ abstract class WalletRepository {
   Future<bool> walletUnlocked();
   // Future<void> transfer({required String recipient, required String amount});
 
+  Future<double> getBalance();
+
+  Future<String> getAddress();
+
   Future<void> transfer({required String amount, required String recipient});
 }

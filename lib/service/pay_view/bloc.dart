@@ -31,9 +31,9 @@ class PayviewBloc extends Bloc<PayviewEvent, PayviewState> {
 
   _onlineTransfer(OnOnlineTransferEvent event, Emitter emit) async {
     print("ooooooooooooooooooooooooooooo");
-    print("${state.amount} ${state.recipient}");
+    print("${event.amount} ${state.recipient}");
     walletBloc.add(
-        OnlineTransferEvent(amount: state.amount, recipient: state.recipient));
+        OnlineTransferEvent(amount: event.amount, recipient: state.recipient));
   }
 
   _onDone(OnDoneEvent event, Emitter emit) {

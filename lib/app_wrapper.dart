@@ -5,7 +5,6 @@ import 'package:ocx_wallet/service/wallet/state.dart';
 import 'package:ocx_wallet/view/authentication/backup_wallet_view.dart';
 import 'package:ocx_wallet/view/authentication/create_wallet_view.dart';
 import 'package:ocx_wallet/view/authentication/unlock_wallet_view.dart';
-import 'package:ocx_wallet/view/common/loading_view.dart';
 import 'package:ocx_wallet/view/home/home_view.dart';
 import 'package:ocx_wallet/view/onboarding/onboarding_view.dart';
 
@@ -17,9 +16,9 @@ class AppWrapper extends StatelessWidget {
     return BlocBuilder<WalletBloc, WalletState>(
       buildWhen: (prev, current) {
         return !((current is WalletLoadingState) ||
-                (current is WalletFailureState) ||
-                (current is TransferSuccessState)) &&
-            prev != current;
+            (current is WalletFailureState) ||
+            (current is TransferSuccessState));
+        // prev != current;
       },
       builder: (context, state) {
         if (state is NoWalletState) {

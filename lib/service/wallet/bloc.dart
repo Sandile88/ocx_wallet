@@ -8,6 +8,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   // repository wallet
   final WalletRepository _walletRepository;
 
+  double balance = 0.0;
+
+  String address = "";
+
   /// bloc constructor
   WalletBloc(this._walletRepository) : super(WalletInitialState()) {
     //
@@ -42,7 +46,11 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         emit(UnlockWalletState());
         return;
       }
-      emit(WalletUnlockedState());
+
+      balance = await _walletRepository.getBalance();
+      address = await _walletRepository.getAddress();
+
+      emit(WalletUnlockedState(balance));
       return;
     }
   }
@@ -74,8 +82,13 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       /// unlock wallet
       await _walletRepository.unlockWallet(pin: event.pin);
 
+      balance = await _walletRepository.getBalance();
+      address = await _walletRepository.getAddress();
+
+      print("balance in rands : $balance");
+
       // emit wallet unlocked state
-      emit(WalletUnlockedState());
+      emit(WalletUnlockedState(balance));
 
       return;
     }
@@ -97,6 +110,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   _secureWallet(SecureWalletEvent event, Emitter emit) async {
+    print("securing wallet");
     emit(SplashState());
 
     await _walletRepository.secureWallet(pin: event.pin);
@@ -105,7 +119,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
     prefs.setBool('is_wallet_secured', true);
 
-    emit(WalletUnlockedState());
+    balance = await _walletRepository.getBalance();
+    address = await _walletRepository.getAddress();
+
+    emit(WalletUnlockedState(balance));
   }
 
   _onlineTransfer(OnlineTransferEvent event, Emitter emit) async {

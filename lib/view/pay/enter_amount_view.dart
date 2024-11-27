@@ -76,8 +76,11 @@ class EnterAmountView extends StatelessWidget {
           child: Numpad(
             onSubmit: (value) {
               print("$value submited");
-              BlocProvider.of<PayviewBloc>(context)
-                  .add(OnOnlineTransferEvent());
+              BlocProvider.of<PayviewBloc>(context).add(
+                OnOnlineTransferEvent(
+                  value,
+                ),
+              );
             },
             hint: "Enter Amount",
           ),

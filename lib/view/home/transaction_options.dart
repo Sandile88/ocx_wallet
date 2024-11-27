@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ocx_wallet/constants/colors.dart';
 import 'package:ocx_wallet/service/pay_view/bloc.dart';
+import 'package:ocx_wallet/service/receive_view/bloc.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
 import 'package:ocx_wallet/utils/icons/deposit_icons.dart';
 import 'package:ocx_wallet/utils/icons/pay_icons.dart';
 import 'package:ocx_wallet/utils/icons/receive_icons.dart';
 import 'package:ocx_wallet/utils/icons/withdraw_icons.dart';
 import 'package:ocx_wallet/view/pay/pay_view.dart';
+import 'package:ocx_wallet/view/receive/receive_view.dart';
 
 class TransactionOptionData {
   final String label;
@@ -20,28 +22,45 @@ class TransactionOptionData {
 
 List<TransactionOptionData> transactionOptions = [
   TransactionOptionData(
-      icon: Pay.pay_filled,
-      label: "Pay",
-      onPressed: (BuildContext context, WalletBloc walletBloc) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => PayviewBloc(walletBloc)),
-                BlocProvider.value(
-                  value: walletBloc,
-                )
-              ],
-              child: const PayView(),
-            ),
+    icon: Pay.pay_filled,
+    label: "Pay",
+    onPressed: (BuildContext context, WalletBloc walletBloc) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => PayviewBloc(walletBloc)),
+              BlocProvider.value(
+                value: walletBloc,
+              )
+            ],
+            child: const PayView(),
           ),
-        );
-      }),
+        ),
+      );
+    },
+  ),
   TransactionOptionData(
-      icon: Receive.receive_outlined,
-      label: "Receive",
-      onPressed: (BuildContext context, WalletBloc walletBloc) {}),
+    icon: Receive.receive_outlined,
+    label: "Receive",
+    onPressed: (BuildContext context, WalletBloc walletBloc) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => ReceiveViewBloc()),
+              // BlocProvider.value(
+              //   value: walletBloc,
+              // )
+            ],
+            child: ReceiveView(address: walletBloc.address),
+          ),
+        ),
+      );
+    },
+  ),
   TransactionOptionData(
       icon: Deposit.deposit_outlined,
       label: "Deposit",

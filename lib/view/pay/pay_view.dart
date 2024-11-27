@@ -4,6 +4,7 @@ import 'package:ocx_wallet/constants/type.dart';
 import 'package:ocx_wallet/service/pay_view/bloc.dart';
 import 'package:ocx_wallet/service/pay_view/state.dart';
 import 'package:ocx_wallet/view/common/loading_view.dart';
+import 'package:ocx_wallet/view/common/nfc_animation.dart';
 import 'package:ocx_wallet/view/pay/enter_address_view.dart';
 import 'package:ocx_wallet/view/pay/enter_amount_view.dart';
 import 'package:ocx_wallet/view/pay/qr_scanner_view.dart';
@@ -31,7 +32,7 @@ class PayView extends StatelessWidget {
           } else if (state.view == Payview.scanQrCode) {
             return QrCodeScanner();
           } else {
-            return const LoadingView();
+            return const NFCPulseAnimation();
           }
         },
       ),

@@ -7,7 +7,14 @@ class WalletState extends Equatable {
 
 class InvalidUnlockPinState extends WalletState {}
 
-class WalletUnlockedState extends WalletState {}
+class WalletUnlockedState extends WalletState {
+  final double balance;
+
+  WalletUnlockedState(this.balance);
+
+  @override
+  List<Object?> get props => [balance];
+}
 
 class WalletFailureState extends WalletState {
   final String message;

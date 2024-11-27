@@ -58,6 +58,8 @@ class NumpadBloc extends Bloc<NumpadEvent, NumpadState> {
         }
       }
 
+      print("this is the new amount ${state.currentInput}");
+
       emit(state.copyWith(currentInput: newAmount));
     }
   }

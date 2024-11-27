@@ -37,7 +37,14 @@ class OnQrCodeScannedWEvent extends PayviewEvent {
   List<Object?> get props => [address];
 }
 
-class OnOnlineTransferEvent extends PayviewEvent {}
+class OnOnlineTransferEvent extends PayviewEvent {
+  final String amount;
+
+  OnOnlineTransferEvent(this.amount);
+
+  @override
+  List<Object?> get props => [amount];
+}
 
 class OnSwitchViewEvent extends PayviewEvent {
   final Payview view;

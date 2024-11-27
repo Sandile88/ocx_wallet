@@ -36,9 +36,13 @@ class EnterPinView extends StatelessWidget {
                           ? SecureWalletEvent(
                               BlocProvider.of<NumpadBloc>(context)
                                   .state
-                                  .currencySymbol,
+                                  .currentInput,
                             )
-                          : UnlockWalletEvent(value),
+                          : UnlockWalletEvent(
+                              BlocProvider.of<NumpadBloc>(context)
+                                  .state
+                                  .currentInput,
+                            ),
                     );
                   },
                 ),
