@@ -14,11 +14,14 @@ class EnterAddressView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _addressController.text =
+        BlocProvider.of<PayviewBloc>(context).state.recipient;
     return BlocListener<PayviewBloc, PayviewState>(
-      listenWhen: (prev, state) {
-        return prev.recipient != state.recipient;
-      },
+      // listenWhen: (prev, state) {
+      //   return prev.recipient != state.recipient;
+      // },
       listener: (context, state) {
+        print("state recipient : ${state.recipient}");
         _addressController.text = state.recipient;
       },
       child: Padding(
@@ -67,8 +70,27 @@ class EnterAddressView extends StatelessWidget {
             const SizedBox(
               height: 20.0,
             ),
-            AddressTextField(
+            TextField(
               controller: _addressController,
+              onChanged: (value) {
+                // TODO: validate address
+                print(value);
+                BlocProvider.of<PayviewBloc>(context)
+                    .add(OnAddressChanged(value));
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: "Enter wallet address or ENS domain name",
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 5.0,
+                  // horizontal: 20.0,
+                ),
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
             const SizedBox(
               height: 20.0,

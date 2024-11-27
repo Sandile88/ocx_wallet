@@ -88,16 +88,22 @@ class AssetsView extends StatelessWidget {
 
   final List<Asset> assets = [
     Asset(
-        balance: 10,
+      balance: 245,
+      imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/1214.png",
+      name: "LSK",
+      value: 1.18,
+    ),
+    Asset(
+        balance: 0,
         value: 0.99,
         imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
         name: "USDT"),
     Asset(
-        balance: 44.0,
+        balance: 0,
         value: 0.99,
         imageUrl:
             "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
-        name: "USDC")
+        name: "USDC"),
   ];
 
   @override
@@ -147,7 +153,7 @@ class AssetTile extends StatelessWidget {
                   height: 4.0,
                 ),
                 Text(
-                  "\$${asset.balance.toStringAsFixed(2)}",
+                  "\$${asset.value.toStringAsFixed(2)}",
                   style: const TextStyle(
                     fontSize: 16.0,
                     color: Colors.grey,

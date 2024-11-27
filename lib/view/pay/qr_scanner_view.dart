@@ -92,6 +92,8 @@ class QrCodeScanner extends StatelessWidget {
         for (final barcode in barcodes) {
           // await controller.stop().then((value) => controller.dispose());
 
+          print("scanned value from qr code : ${barcode.rawValue}");
+
           BlocProvider.of<PayviewBloc>(context)
               .add(OnQrCodeScannedWEvent(barcode.rawValue ?? ""));
 
