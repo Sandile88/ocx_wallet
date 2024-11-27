@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
 import 'package:ocx_wallet/service/wallet/state.dart';
@@ -49,9 +50,17 @@ class SplashView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text("Splash Screen"),
+        child: Container(
+          height: 100.0,
+          width: 100.0,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/logo.png"),
+            ),
+          ),
+        ),
       ),
     );
   }

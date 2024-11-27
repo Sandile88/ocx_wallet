@@ -88,7 +88,7 @@ class AssetsView extends StatelessWidget {
 
   final List<Asset> assets = [
     Asset(
-      balance: 245,
+      balance: 0,
       imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/1214.png",
       name: "LSK",
       value: 1.18,
