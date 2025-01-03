@@ -89,21 +89,15 @@ class AssetsView extends StatelessWidget {
   final List<Asset> assets = [
     Asset(
       balance: 0,
-      imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/1214.png",
-      name: "LSK",
-      value: 1.18,
+      imageUrl:"assets/images/uzar.png",
+      name: "uZAR",
+      value: 1.00,
     ),
     Asset(
         balance: 0,
         value: 0.99,
         imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
         name: "USDT"),
-    Asset(
-        balance: 0,
-        value: 0.99,
-        imageUrl:
-            "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
-        name: "USDC"),
   ];
 
   @override
@@ -134,7 +128,9 @@ class AssetTile extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: Colors.transparent,
-              backgroundImage: NetworkImage(asset.imageUrl),
+              backgroundImage: asset.imageUrl.startsWith('assets/')
+                  ? AssetImage(asset.imageUrl)
+                  : NetworkImage(asset.imageUrl),
             ),
             const SizedBox(
               width: 12.0,
@@ -153,7 +149,9 @@ class AssetTile extends StatelessWidget {
                   height: 4.0,
                 ),
                 Text(
-                  "\$${asset.value.toStringAsFixed(2)}",
+                  asset.name == 'uZAR'
+                  ? "R${asset.value.toStringAsFixed(2)}"
+                  : "\$${asset.value.toStringAsFixed(2)}",
                   style: const TextStyle(
                     fontSize: 16.0,
                     color: Colors.grey,
@@ -164,9 +162,11 @@ class AssetTile extends StatelessWidget {
           ],
         ),
         Text(
-          "\$${asset.balance.toStringAsFixed(2)}",
-          style: const TextStyle(
-            fontSize: 22.0,
+          asset.name == 'uZAR'
+              ? "R${asset.value.toStringAsFixed(2)}"
+              : "\$${asset.value.toStringAsFixed(2)}",
+              style: const TextStyle(
+              fontSize: 22.0,
           ),
         )
       ],
