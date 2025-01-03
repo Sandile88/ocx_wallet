@@ -9,6 +9,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final WalletRepository _walletRepository;
 
   double balance = 0.0;
+  double proofBalance = 0.0;
 
   String address = "";
 

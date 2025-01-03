@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ocx_wallet/constants/colors.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
 import 'package:ocx_wallet/view/home/balance.dart';
+import 'package:ocx_wallet/view/home/proof_balance.dart';
 import 'package:ocx_wallet/view/home/transaction_options.dart';
 
 class HomeView extends StatelessWidget {
@@ -36,7 +37,13 @@ class HomeView extends StatelessWidget {
               const SizedBox(
                 height: 20.0,
               ),
-              const Balance(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Balance(),
+                  const ProofBalance(),
+                ],
+              ),
               const SizedBox(
                 height: 20.0,
               ),
