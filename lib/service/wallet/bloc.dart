@@ -11,7 +11,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final WalletRepository _walletRepository;
 
   double balance = 0.0;
-  double proofBalance = 0.0;
+  double proofBalance = 10.0;
   String address = "";
 
   /// bloc constructor

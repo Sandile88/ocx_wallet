@@ -4,6 +4,7 @@ import 'package:ocx_wallet/constants/colors.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
 import 'package:ocx_wallet/view/home/balance.dart';
 import 'package:ocx_wallet/view/home/proof_balance.dart';
+import 'package:ocx_wallet/view/home/total_balance.dart';
 import 'package:ocx_wallet/view/home/transaction_options.dart';
 import 'package:ocx_wallet/view/proof/generate_proof.dart';
 
@@ -64,6 +65,10 @@ class HomeView extends StatelessWidget {
                   const ProofBalance(),
                 ],
               ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              const TotalBalance(),
               const SizedBox(
                 height: 20.0,
               ),
