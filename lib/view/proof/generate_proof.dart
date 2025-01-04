@@ -9,6 +9,8 @@ import 'package:ocx_wallet/models/proof_data.dart';
 import 'package:ocx_wallet/utils/clipboard_util.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ocx_wallet/view/home/home_view.dart';
+
 
 class GenerateProof extends StatefulWidget {
   const GenerateProof({Key? key}) : super(key: key);
@@ -19,135 +21,153 @@ class GenerateProof extends StatefulWidget {
 
 class _GenerateProofState extends State<GenerateProof> {
   final TextEditingController _amountController = TextEditingController();
-  // final List<ProofData> _proofHistory = [];
+  bool _isQrVisible = false;
+
+  void _showSuccessNotification() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Proof generated successfully!'),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 1),
+      ),
+    );
+
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+          MaterialPageRoute(builder: (context) => const HomeView()),
+          (route) => false,
+        );
+      });
+
+
+  }
 
   void _showProofDialog(String proof, double amount) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Generated Proof'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Scan QR Code:'),
-                const SizedBox(height: 20),
-                QrImageView(
-                  data: proof,
-                  size: 200,
-                ),
-                const SizedBox(height: 20),
-                const Text('Or copy the proof text:'),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
+        return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Generated Proof'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Text(
-                          proof,
-                          style: const TextStyle(fontSize: 12),
+                      const Text('Tap to reveal QR Code:'),
+                      const SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isQrVisible = !_isQrVisible;
+                          });
+                        },
+                        child: Container(
+                          width: 800,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              QrImageView(
+                                data: proof,
+                                size: 300,
+                              ),
+                              if (!_isQrVisible)
+                                Container(
+                                  width: 300,
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(1.0),
+                                    borderRadius: BorderRadius.circular(8),
+                                    backgroundBlendMode: BlendMode.srcOver,
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Tap to Reveal',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.copy),
-                        onPressed: () async {
-                          await ClipboardUtil.copyToClipboard(proof);
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Proof copied to clipboard')),
-                            );
-                          }
-                        },
+                      const SizedBox(height: 20),
+                      const Text('Or copy the proof text:'),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                proof,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.copy),
+                              onPressed: () async {
+                                await ClipboardUtil.copyToClipboard(proof);
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Proof copied to clipboard')),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // adding proof to ProofBloc
-                final proofData = ProofData(
-                  date: DateFormat('MMM dd, yyyy').format(DateTime.now()),
-                  amount: amount,
-                  proof: proof,
-                );
-                context.read<ProofBloc>().add(AddProofEvent(proofData));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Done'),
-            ),
-          ],
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      final proofData = ProofData(
+                        date: DateFormat('MMM dd, yyyy').format(DateTime.now()),
+                        amount: amount,
+                        proof: proof,
+                      );
+                      context.read<ProofBloc>().add(AddProofEvent(proofData));
+                      Navigator.of(context).pop();
+                      _showSuccessNotification();
+                    },
+                    child: const Text('Done'),
+                  ),
+                ],
+              );
+            }
         );
       },
     );
   }
-  //
-  // copy and move to another file and send an event that proof has been stored
-  // Widget _buildProofHistoryItem(ProofData record) {
-  //   return Card(
-  //     margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16),
-  //       child: Row(
-  //         children: [
-  //           QrImageView(
-  //             data: record.proof,
-  //             size: 60,
-  //           ),
-  //           const SizedBox(width: 16),
-  //           Expanded(
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   record.date,
-  //                   style: const TextStyle(
-  //                     fontSize: 14,
-  //                     color: Colors.grey,
-  //                   ),
-  //                 ),
-  //                 const SizedBox(height: 4),
-  //                 Text(
-  //                   '${record.amount.toStringAsFixed(2)} uzar',
-  //                   style: const TextStyle(
-  //                     fontSize: 16,
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           IconButton(
-  //             icon: const Icon(Icons.copy),
-  //             onPressed: () async {
-  //               await ClipboardUtil.copyToClipboard(record.proof);
-  //               if (mounted) {
-  //                 ScaffoldMessenger.of(context).showSnackBar(
-  //                   const SnackBar(content: Text('Proof copied to clipboard')),
-  //                 );
-  //               }
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -179,9 +199,10 @@ class _GenerateProofState extends State<GenerateProof> {
               onPressed: () {
                 final amount = double.tryParse(_amountController.text) ?? 0.0;
                 walletBloc.add(GenerateProofEvent(amount));
-
-                // mock proof
                 final mockProof = "mock_proof_${DateTime.now().millisecondsSinceEpoch}";
+                setState(() {
+                  _isQrVisible = false;
+                });
                 _showProofDialog(mockProof, amount);
               },
               child: const Text("Generate Proof"),
