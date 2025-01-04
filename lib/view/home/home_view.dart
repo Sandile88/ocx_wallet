@@ -5,6 +5,7 @@ import 'package:ocx_wallet/service/wallet/bloc.dart';
 import 'package:ocx_wallet/view/home/balance.dart';
 import 'package:ocx_wallet/view/home/proof_balance.dart';
 import 'package:ocx_wallet/view/home/transaction_options.dart';
+import 'package:ocx_wallet/view/proof/generate_proof.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -14,6 +15,25 @@ class HomeView extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider.value(
+                    value: BlocProvider.of<WalletBloc>(context),
+                    child: const GenerateProof(),
+                  ),
+                ),
+              );
+            },
+
+          ),
+        ],
+      ),
       body: SizedBox(
         height: size.height,
         width: size.width,

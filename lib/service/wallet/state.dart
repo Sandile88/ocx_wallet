@@ -5,6 +5,17 @@ class WalletState extends Equatable {
   List<Object?> get props => [];
 }
 
+// representing updated wallet balance and proof balance
+class WalletUpdated extends WalletState {
+  final double balance;
+  final double proofBalance;
+
+  WalletUpdated(this.balance, this.proofBalance);
+
+  @override
+  List<Object?> get props => [balance, proofBalance];
+}
+
 class InvalidUnlockPinState extends WalletState {}
 
 class WalletUnlockedState extends WalletState {

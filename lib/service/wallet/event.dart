@@ -21,6 +21,13 @@ class OnlineTransferEvent extends WalletEvent {
   List<Object?> get props => [recipient, amount];
 }
 
+class GenerateProofEvent extends WalletEvent {
+  final double amount;
+
+  GenerateProofEvent(this.amount);
+}
+
+
 class SecureWalletEvent extends WalletEvent {
   final String pin;
 
