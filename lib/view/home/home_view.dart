@@ -7,12 +7,14 @@ import 'package:ocx_wallet/view/home/proof_balance.dart';
 import 'package:ocx_wallet/view/home/total_balance.dart';
 import 'package:ocx_wallet/view/home/transaction_options.dart';
 import 'package:ocx_wallet/view/proof/generate_proof.dart';
+import 'package:ocx_wallet/view/proof/proof_history.dart';
+import 'package:ocx_wallet/view/proof/submit_proof.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -31,7 +33,28 @@ class HomeView extends StatelessWidget {
                 ),
               );
             },
-
+          ),
+          IconButton(
+            icon: const Icon(Icons.upload),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubmitProofPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HistoryProofPage(),
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -90,7 +90,7 @@ class _GenerateProofState extends State<GenerateProof> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Submit Proof'),
+              child: const Text('Done'),
             ),
           ],
         );
@@ -98,6 +98,7 @@ class _GenerateProofState extends State<GenerateProof> {
     );
   }
 
+  //copy this send an event that proof has been stored
   Widget _buildProofHistoryItem(ProofData record) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -123,7 +124,7 @@ class _GenerateProofState extends State<GenerateProof> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${record.amount.toStringAsFixed(2)} tokens',
+                    '${record.amount.toStringAsFixed(2)} uzar',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -182,7 +183,7 @@ class _GenerateProofState extends State<GenerateProof> {
                     final amount = double.tryParse(_amountController.text) ?? 0.0;
                     walletBloc.add(GenerateProofEvent(amount));
 
-                    // In real app, you would get the actual proof from the bloc
+                    // mock proof
                     final mockProof = "mock_proof_${DateTime.now().millisecondsSinceEpoch}";
                     _showProofDialog(mockProof, amount);
                   },
