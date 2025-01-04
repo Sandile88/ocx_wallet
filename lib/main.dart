@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ocx_wallet/app_wrapper.dart';
 import 'package:ocx_wallet/repository/wallet_repositoryimpl.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
+import 'package:ocx_wallet/service/proof/bloc.dart';
 import 'package:ocx_wallet/service/wallet/event.dart';
 import 'package:ocx_wallet/store/secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -19,11 +20,15 @@ class OcxApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WalletBloc(WalletRepositoryimpl(secureStorage))
-        ..add(
-          AppStartedEvent(),
-        ),
+    return MultiBlocProvider(
+        providers: [
+      BlocProvider<ProofBloc>(
+      create: (context) => ProofBloc(),
+    ),
+      BlocProvider<WalletBloc>(
+      create: (context) => WalletBloc(WalletRepositoryimpl(SecureStorage()))..add(AppStartedEvent()),
+    ),
+    ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true),

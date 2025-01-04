@@ -9,6 +9,8 @@ import 'package:ocx_wallet/view/home/transaction_options.dart';
 import 'package:ocx_wallet/view/proof/generate_proof.dart';
 import 'package:ocx_wallet/view/proof/proof_history.dart';
 import 'package:ocx_wallet/view/proof/submit_proof.dart';
+import 'package:ocx_wallet/service/proof/bloc.dart';
+
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -51,7 +53,9 @@ class HomeView extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HistoryProofPage(),
+                  builder: (context) => BlocProvider.value(
+                    value: BlocProvider.of<ProofBloc>(context),
+                    child: HistoryProofPage()),
                 ),
               );
             },
