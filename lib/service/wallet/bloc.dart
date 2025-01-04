@@ -30,7 +30,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     // Handle proof generation
     void _generateProof(GenerateProofEvent event, Emitter<WalletState> emit) {
       if (event.amount > 0 && event.amount <= balance) {
-        balance -= event.amount;
+        balance += event.amount;
         proofBalance += event.amount;
         emit(WalletUpdated(balance, proofBalance));
       } else {
