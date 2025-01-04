@@ -38,15 +38,13 @@ class _GenerateProofState extends State<GenerateProof> {
       ),
     );
 
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 0), () {
       Navigator.pushAndRemoveUntil(
         context,
           MaterialPageRoute(builder: (context) => const HomeView()),
           (route) => false,
         );
       });
-
-
   }
 
   void _showProofDialog(String proof, double amount) {
