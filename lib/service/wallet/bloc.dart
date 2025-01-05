@@ -11,7 +11,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final WalletRepository _walletRepository;
 
   double balance = 0.0;
-  double proofBalance = 10.0;
+  double proofBalance = 0.0;
   String address = "";
 
   /// bloc constructor
@@ -25,18 +25,32 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<OnboardingDoneEvent>(_onboardingDone);
     on<OnlineTransferEvent>(_onlineTransfer);
     on<GenerateProofEvent>(_generateProof);
+    on<ClaimProofEvent>(_claimProof);
+
   }
 
     // Handle proof generation
     void _generateProof(GenerateProofEvent event, Emitter<WalletState> emit) {
       if (event.amount > 0 && event.amount <= balance) {
-        balance += event.amount;
+        balance -= event.amount; // deducting from balance when generating proof
         proofBalance += event.amount;
         emit(WalletUpdated(balance, proofBalance));
       } else {
         print("Invalid amount for proof generation");
       }
     }
+
+
+  void _claimProof(ClaimProofEvent event, Emitter<WalletState> emit) {
+    if (event.amount > 0) {
+      proofBalance -= event.amount;
+
+      balance += event.amount; // adding to balance when claiming proof
+      emit(WalletUpdated(balance, proofBalance));
+    } else {
+      emit(WalletFailureState("Invalid proof amount"));
+    }
+  }
 
 
     _init(Emitter emit) async {

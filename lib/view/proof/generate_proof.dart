@@ -148,12 +148,16 @@ class _GenerateProofState extends State<GenerateProof> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      // final proofId = "proof_${amount.toStringAsFixed(2)}_${DateTime.now().millisecondsSinceEpoch}";
+
                       final proofData = ProofData(
                         date: DateFormat('MMM dd, yyyy').format(DateTime.now()),
                         amount: amount,
                         proof: proof,
                       );
                       context.read<ProofBloc>().add(AddProofEvent(proofData));
+                      context.read<WalletBloc>().add(GenerateProofEvent(amount));
+
                       Navigator.of(context).pop();
                       _showSuccessNotification();
                     },
@@ -196,12 +200,15 @@ class _GenerateProofState extends State<GenerateProof> {
             ElevatedButton(
               onPressed: () {
                 final amount = double.tryParse(_amountController.text) ?? 0.0;
-                walletBloc.add(GenerateProofEvent(amount));
-                final mockProof = "mock_proof_${DateTime.now().millisecondsSinceEpoch}";
-                setState(() {
-                  _isQrVisible = false;
-                });
-                _showProofDialog(mockProof, amount);
+                if (amount <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a valid amount')),
+                  );
+                  return;
+                }
+                // Generate proof with consistent format
+                final proof = 'PROOF_${amount.toStringAsFixed(2)}_${DateTime.now().millisecondsSinceEpoch}';
+                _showProofDialog(proof, amount);
               },
               child: const Text("Generate Proof"),
             ),

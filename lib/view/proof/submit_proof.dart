@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ocx_wallet/service/proof/bloc.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
+import 'package:ocx_wallet/service/proof/state.dart';
 import 'package:ocx_wallet/models/proof_data.dart';
 import 'package:ocx_wallet/service/wallet/event.dart';
 
@@ -19,55 +21,56 @@ class _SubmitProofPageState extends State<SubmitProofPage> {
     final proof = _proofController.text.trim();
     if (proof.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please paste a valid proof.")),
+        const SnackBar(content: Text("Please paste a valid proof")),
       );
       return;
     }
 
-    /// retrieving proof
-    ProofData? proofData = _getProofDataFromProof(proof);
+    try {
+      // Parse the proof using the same format as generation
+      if (proof.startsWith('PROOF_')) {
+        final parts = proof.split('_');
+        if (parts.length >= 2) {
+          final amount = double.parse(parts[1]);
 
-    if (proofData != null) {
-      final walletBloc = BlocProvider.of<WalletBloc>(context);
-      walletBloc.add(GenerateProofEvent(proofData.amount));
+          // Check if proof exists in history
+          final proofBloc = context.read<ProofBloc>();
+          final proofs = (proofBloc.state as ProofUpdated).proofs;
 
+          final proofExists = proofs.any((p) => p.proof == proof);
+
+          if (proofExists) {
+            final walletBloc = context.read<WalletBloc>();
+            walletBloc.add(ClaimProofEvent(amount));
+
+            // Remove the proof from history (optional)
+            // proofBloc.add(RemoveProofEvent(proof));
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Successfully claimed ${amount.toStringAsFixed(2)}!")),
+            );
+
+            Navigator.pop(context);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Invalid or already claimed proof")),
+            );
+          }
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Invalid proof format")),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Proof claimed successfully!")),
-      );
-
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid proof!")),
+        const SnackBar(content: Text("Invalid proof")),
       );
     }
   }
-
-  ProofData? _getProofDataFromProof(String proof) {
-    final proofList = <ProofData>[];
-
-    proofList.add(ProofData(date: "Jan 01, 2025", amount: 10.0, proof: "mock_proof_1"));
-    proofList.add(ProofData(date: "Jan 02, 2025", amount: 20.0, proof: "mock_proof_2"));
-
-    print('Pasted Proof: $proof');
-
-    for (var item in proofList) {
-      print('Checking proof: ${item.proof}'); /
-    }
-
-    return proofList.firstWhere(
-          (element) => element.proof == proof,
-      orElse: () => ProofData(date: "Unknown", amount: 0.0, proof: "Unknown"),
-
-    );
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _proofController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Submit Proof"),
@@ -80,10 +83,9 @@ class _SubmitProofPageState extends State<SubmitProofPage> {
             TextField(
               controller: _proofController,
               decoration: const InputDecoration(
-                labelText: "Enter Proof ",
+                labelText: "Paste Proof Here",
                 border: OutlineInputBorder(),
               ),
-              // keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
             ElevatedButton(

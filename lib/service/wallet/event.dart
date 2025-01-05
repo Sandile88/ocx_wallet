@@ -45,3 +45,10 @@ class UnlockWalletEvent extends WalletEvent {
   @override
   List<Object?> get props => [pin];
 }
+
+
+class ClaimProofEvent extends WalletEvent {
+  final double amount;
+  ClaimProofEvent(this.amount);
+}
+
