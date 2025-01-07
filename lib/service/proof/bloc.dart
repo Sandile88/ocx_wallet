@@ -8,10 +8,23 @@ class ProofBloc extends Bloc<ProofEvent, ProofState> {
 
   ProofBloc() : super(ProofInitial()) {
     on<AddProofEvent>(_onAddProof);
+    on<MarkProofAsSubmittedEvent>(_onMarkProofAsSubmitted);
   }
 
   void _onAddProof(AddProofEvent event, Emitter<ProofState> emit) {
     proofs.insert(0, event.proofData);
-    emit(ProofUpdated(proofs));
+    emit(ProofUpdated(proofs: proofs));
+  }
+
+  void _onMarkProofAsSubmitted(MarkProofAsSubmittedEvent event, Emitter<ProofState> emit) {
+    if (state is ProofUpdated) {
+      final currentState = state as ProofUpdated;
+      final updatedSubmittedProofs = Set<String>.from(currentState.submittedProofs)
+        ..add(event.proof);
+
+      emit(currentState.copyWith(
+        submittedProofs: updatedSubmittedProofs,
+      ));
+    }
   }
 }

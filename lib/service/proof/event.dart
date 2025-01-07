@@ -7,3 +7,9 @@ class AddProofEvent extends ProofEvent {
 
   AddProofEvent(this.proofData);
 }
+
+class MarkProofAsSubmittedEvent extends ProofEvent {
+  final String proof;
+
+  MarkProofAsSubmittedEvent(this.proof);
+}

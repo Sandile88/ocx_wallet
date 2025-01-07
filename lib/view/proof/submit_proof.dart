@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ocx_wallet/service/proof/bloc.dart';
 import 'package:ocx_wallet/service/wallet/bloc.dart';
 import 'package:ocx_wallet/service/proof/state.dart';
+import 'package:ocx_wallet/service/proof/event.dart';
 import 'package:ocx_wallet/models/proof_data.dart';
 import 'package:ocx_wallet/service/wallet/event.dart';
-
 
 class SubmitProofPage extends StatefulWidget {
   const SubmitProofPage({super.key});
@@ -17,55 +17,88 @@ class SubmitProofPage extends StatefulWidget {
 class _SubmitProofPageState extends State<SubmitProofPage> {
   final TextEditingController _proofController = TextEditingController();
 
-  void _submitProof() {
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Future<bool> _checkIfProofAlreadySubmitted(String proof) async {
+    final proofBloc = context.read<ProofBloc>();
+    if (proofBloc.state is! ProofUpdated) return false;
+
+    final proofs = (proofBloc.state as ProofUpdated).proofs;
+    final submittedProofs = (proofBloc.state as ProofUpdated).submittedProofs;
+
+    // checking proofs aren't submitted yet)
+    final proofExists = proofs.any((p) => p.proof == proof);
+    if (!proofExists) return false;
+
+    // and then checking if they have
+    return submittedProofs.contains(proof);
+  }
+
+  void _submitProof() async {
     final proof = _proofController.text.trim();
+
     if (proof.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please paste a valid proof")),
-      );
+      _showErrorSnackBar("Please paste a valid proof");
       return;
     }
 
     try {
-      // Parse the proof using the same format as generation
+      final isAlreadySubmitted = await _checkIfProofAlreadySubmitted(proof);
+      if (isAlreadySubmitted) {
+        _showErrorSnackBar("This proof has already been submitted");
+        return;
+      }
+
       if (proof.startsWith('PROOF_')) {
         final parts = proof.split('_');
         if (parts.length >= 2) {
           final amount = double.parse(parts[1]);
 
-          // Check if proof exists in history
           final proofBloc = context.read<ProofBloc>();
           final proofs = (proofBloc.state as ProofUpdated).proofs;
 
           final proofExists = proofs.any((p) => p.proof == proof);
 
           if (proofExists) {
+            proofBloc.add(MarkProofAsSubmittedEvent(proof));
+
             final walletBloc = context.read<WalletBloc>();
             walletBloc.add(ClaimProofEvent(amount));
 
-            // Remove the proof from history (optional)
-            // proofBloc.add(RemoveProofEvent(proof));
+            _showSuccessSnackBar("Successfully claimed ${amount.toStringAsFixed(2)}!");
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Successfully claimed ${amount.toStringAsFixed(2)}!")),
-            );
+            _proofController.clear();
 
             Navigator.pop(context);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Invalid or already claimed proof")),
-            );
+            _showErrorSnackBar("Invalid or non-existent proof");
           }
+        } else {
+          _showErrorSnackBar("Invalid proof format");
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Invalid proof format")),
-        );
+        _showErrorSnackBar("Invalid proof format - must start with 'PROOF_'");
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid proof")),
-      );
+      _showErrorSnackBar("Invalid proof format");
     }
   }
 
@@ -85,6 +118,7 @@ class _SubmitProofPageState extends State<SubmitProofPage> {
               decoration: const InputDecoration(
                 labelText: "Paste Proof Here",
                 border: OutlineInputBorder(),
+                hintText: "Enter your proof code",
               ),
             ),
             const SizedBox(height: 20),

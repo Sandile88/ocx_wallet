@@ -47,6 +47,7 @@ class _GenerateProofState extends State<GenerateProof> {
     });
   }
 
+
   void _showProofDialog(ProofData proofData) {
     showDialog(
       context: context,
@@ -59,15 +60,15 @@ class _GenerateProofState extends State<GenerateProof> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Tap to reveal QR Code:'),
+                    const Text('QR Code:'),
                     const SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isQrVisible = !_isQrVisible;
-                        });
-                      },
-                      child: Container(
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     setState(() {
+                    //       _isQrVisible = !_isQrVisible;
+                    //     });
+                    //   },
+                      Container(
                         width: 800,
                         height: 300,
                         decoration: BoxDecoration(
@@ -81,29 +82,29 @@ class _GenerateProofState extends State<GenerateProof> {
                               data: proofData.proof,
                               size: 300,
                             ),
-                            if (!_isQrVisible)
-                              Container(
-                                width: 300,
-                                height: 300,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(1.0),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Tap to Reveal',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            // if (!_isQrVisible)
+                            //   Container(
+                            //     width: 300,
+                            //     height: 300,
+                            //     decoration: BoxDecoration(
+                            //       color: Colors.grey.withOpacity(1.0),
+                            //       borderRadius: BorderRadius.circular(8),
+                            //     ),
+                            //     child: const Center(
+                            //       child: Text(
+                            //         'Tap to Reveal',
+                            //         style: TextStyle(
+                            //           color: Colors.white,
+                            //           fontSize: 18,
+                            //           fontWeight: FontWeight.bold,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ),
-                    ),
+                    // ),
                     const SizedBox(height: 20),
                     const Text('Or copy the proof text:'),
                     const SizedBox(height: 10),
