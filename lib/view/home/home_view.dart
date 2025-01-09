@@ -10,6 +10,9 @@ import 'package:ocx_wallet/view/proof/generate_proof.dart';
 import 'package:ocx_wallet/view/proof/proof_history.dart';
 import 'package:ocx_wallet/view/proof/submit_proof.dart';
 import 'package:ocx_wallet/service/proof/bloc.dart';
+import 'package:ocx_wallet/metamask.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 
 class HomeView extends StatelessWidget {
@@ -22,6 +25,16 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          const Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: MetaMaskConnect(),
+          ),
+          const VerticalDivider(
+            color: Colors.grey,
+            indent: 12,
+            endIndent: 12,
+            width: 1,
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
@@ -90,6 +103,7 @@ class HomeView extends StatelessWidget {
                 children: [
                   const Balance(),
                   const ProofBalance(),
+
                 ],
               ),
               const SizedBox(
